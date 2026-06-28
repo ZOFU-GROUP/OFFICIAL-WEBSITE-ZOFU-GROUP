@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZOFU GROUP — THINK. BUILD. CONQUER.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #080600;
+      --bg2:     #0d0900;
+      --fg:      #fff8ee;
+      --fg2:     #a8956e;
+      --orange:  #f97316;
+      --yellow:  #fbbf24;
+      --fire:    #ff4d00;
+      --card:    #110e00;
+      --border:  #2a2000;
+      --border2: #3d2f00;
+      --glow-o:  rgba(249,115,22,0.22);
+      --glow-y:  rgba(251,191,36,0.16);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE ── */
+    body::before {
+      content:''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity:.5;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width:13px; height:13px; background:var(--orange);
+      border-radius:50%; position:fixed; top:0; left:0;
+      pointer-events:none; z-index:9999;
+      transform:translate(-50%,-50%);
+      transition:width .18s, height .18s;
+      mix-blend-mode:screen;
+    }
+    .cursor-ring {
+      width:36px; height:36px;
+      border:1.5px solid rgba(249,115,22,.5);
+      border-radius:50%; position:fixed; top:0; left:0;
+      pointer-events:none; z-index:9998;
+      transform:translate(-50%,-50%);
+      transition:width .18s, height .18s;
+    }
+
+    /* ── BG GRID ── */
+    .hero-grid {
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(249,115,22,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249,115,22,.035) 1px, transparent 1px);
+      background-size:60px 60px;
+    }
+
+    /* ── ORBS ── */
+    .orb { position:fixed; border-radius:50%; filter:blur(90px); pointer-events:none; z-index:0; }
+    .orb1 {
+      width:700px; height:700px;
+      background:radial-gradient(circle, rgba(249,115,22,.13), transparent 70%);
+      top:-200px; right:-150px;
+      animation:float1 13s ease-in-out infinite;
+    }
+    .orb2 {
+      width:450px; height:450px;
+      background:radial-gradient(circle, rgba(251,191,36,.09), transparent 70%);
+      bottom:5%; left:-100px;
+      animation:float2 15s ease-in-out infinite;
+    }
+    .orb3 {
+      width:320px; height:320px;
+      background:radial-gradient(circle, rgba(255,77,0,.07), transparent 70%);
+      top:45%; left:48%;
+      animation:float3 11s ease-in-out infinite;
+    }
+    @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,38px)}}
+    @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,-28px)}}
+    @keyframes float3{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,28px)}}
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1rem 2.5rem;
+      background:rgba(8,6,0,0.88);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo {
+      font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem;
+      letter-spacing:.04em; color:var(--fg); text-decoration:none;
+      display:flex; align-items:center; gap:.55rem;
+    }
+    /* SVG thunder logo in nav */
+    .thunder-logo {
+      width:28px; height:28px; flex-shrink:0;
+    }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a {
+      color:var(--fg2); text-decoration:none; font-size:.88rem;
+      font-weight:500; transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--fg); }
+    .nav-cta {
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      color:#000; padding:.5rem 1.3rem; border-radius:6px;
+      font-weight:700; font-size:.85rem; text-decoration:none;
+      box-shadow:0 0 18px rgba(249,115,22,.4);
+      transition:box-shadow .2s, transform .2s;
+    }
+    .nav-cta:hover { box-shadow:0 0 30px rgba(249,115,22,.65); transform:translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height:100vh;
+      display:flex; flex-direction:column; justify-content:center;
+      padding:8rem 2.5rem 4rem;
+      max-width:1200px; margin:0 auto;
+      position:relative; z-index:1;
+    }
+
+    /* Big background thunder SVG */
+    .hero-thunder-bg {
+      position:absolute; right:-60px; top:50%;
+      transform:translateY(-50%);
+      width:480px; height:480px; opacity:.055;
+      pointer-events:none; z-index:0;
+      animation:thunderpulse 3s ease-in-out infinite;
+    }
+    @keyframes thunderpulse{0%,100%{opacity:.055}50%{opacity:.085}}
+
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:.5rem;
+      font-size:.74rem; letter-spacing:.16em; color:var(--yellow);
+      text-transform:uppercase; margin-bottom:2rem;
+      padding:.35rem .9rem; border:1px solid rgba(251,191,36,.22);
+      border-radius:999px; background:rgba(251,191,36,.06); width:fit-content;
+      position:relative; z-index:1;
+    }
+    .blink {
+      width:6px; height:6px; background:var(--orange);
+      border-radius:50%; animation:blink 1.4s infinite;
+      box-shadow:0 0 6px var(--orange);
+    }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+
+    .hero h1 {
+      font-family:'Syne',sans-serif;
+      font-size:clamp(3.2rem,8vw,6.8rem);
+      font-weight:800; line-height:1.0;
+      letter-spacing:-0.03em; margin-bottom:1.8rem;
+      position:relative; z-index:1;
+    }
+    .hero h1 .line2 {
+      background:linear-gradient(120deg, var(--orange) 0%, var(--yellow) 60%, #fff176 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+      filter:drop-shadow(0 0 28px rgba(249,115,22,.5));
+    }
+    .hero-sub {
+      font-size:1.1rem; color:var(--fg2); max-width:500px;
+      margin-bottom:3rem; line-height:1.78;
+      position:relative; z-index:1;
+    }
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:4rem; position:relative; z-index:1; }
+    .btn-primary {
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      color:#000; padding:.85rem 2rem; border-radius:8px;
+      font-weight:700; text-decoration:none; font-size:.95rem;
+      box-shadow:0 4px 24px rgba(249,115,22,.45);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 36px rgba(249,115,22,.65); }
+    .btn-outline {
+      border:1px solid var(--border2); color:var(--fg);
+      padding:.85rem 2rem; border-radius:8px;
+      font-weight:600; text-decoration:none; font-size:.95rem;
+      transition:border-color .2s, background .2s;
+    }
+    .btn-outline:hover { border-color:var(--orange); background:rgba(249,115,22,.07); }
+
+    /* hero stats */
+    .hero-stats {
+      display:flex; gap:3rem; flex-wrap:wrap;
+      border-top:1px solid var(--border);
+      padding-top:2.5rem; position:relative; z-index:1;
+    }
+    .stat-item .num {
+      font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .stat-item .label { font-size:.8rem; color:var(--fg2); letter-spacing:.06em; margin-top:.1rem; }
+
+    /* scroll indicator */
+    .scroll-indicator {
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    }
+    .scroll-line {
+      width:1px; height:50px;
+      background:linear-gradient(to bottom, transparent, var(--orange));
+      animation:scrollpulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollpulse{0%,100%{opacity:.3}50%{opacity:1}}
+    .scroll-text { font-size:.68rem; letter-spacing:.15em; color:var(--fg2); text-transform:uppercase; }
+
+    /* ── SECTIONS ── */
+    section { padding:7rem 2.5rem; position:relative; z-index:1; }
+    .container { max-width:1100px; margin:0 auto; }
+    .section-eyebrow {
+      display:inline-flex; align-items:center; gap:.5rem;
+      font-size:.72rem; letter-spacing:.2em; color:var(--orange);
+      text-transform:uppercase; margin-bottom:1.2rem;
+    }
+    .section-eyebrow::before {
+      content:''; width:24px; height:1px;
+      background:linear-gradient(90deg, var(--orange), var(--yellow)); display:block;
+    }
+    h2 {
+      font-family:'Syne',sans-serif;
+      font-size:clamp(1.9rem,4vw,3rem);
+      font-weight:800; margin-bottom:1rem; line-height:1.15;
+    }
+    .section-sub { color:var(--fg2); max-width:540px; line-height:1.75; margin-bottom:3.5rem; }
+
+    /* ── ABOUT ── */
+    .about-layout { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+    .about-text p { color:var(--fg2); line-height:1.85; margin-bottom:1.2rem; }
+    .about-text strong { color:var(--fg); }
+    .about-est {
+      display:inline-flex; align-items:center; gap:.6rem;
+      margin-top:1rem; font-size:.82rem; color:var(--fg2);
+      border:1px solid var(--border2); padding:.5rem 1rem; border-radius:6px;
+    }
+    .about-visual { position:relative; }
+    .about-card-stack { position:relative; height:360px; }
+    .acard {
+      position:absolute; background:var(--card);
+      border:1px solid var(--border2); border-radius:16px; padding:1.8rem;
+      transition:transform .3s;
+    }
+    .acard:hover { transform:translateY(-4px); }
+    .acard1 { width:220px; top:0; left:0; z-index:3; border-color:rgba(249,115,22,.3); }
+    .acard2 { width:200px; top:80px; left:130px; z-index:2; border-color:rgba(251,191,36,.25); }
+    .acard3 { width:180px; top:170px; left:60px; z-index:1; border-color:rgba(255,77,0,.2); }
+    .acard-icon { font-size:1.6rem; margin-bottom:.75rem; }
+    .acard-title { font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+    .acard-sub { font-size:.75rem; color:var(--fg2); }
+    .acard-glow {
+      position:absolute; width:100%; height:100%;
+      background:radial-gradient(circle at 30% 50%, rgba(249,115,22,.08), transparent 70%);
+      border-radius:16px; top:0; left:0; pointer-events:none;
+    }
+
+    /* ── THUNDER ICON (reusable SVG inline) ── */
+    /* used as big hero bg and in about cards */
+
+    /* ── DIVISIONS ── */
+    .divs-bg { background:var(--bg2); }
+    .divisions-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem;
+    }
+    .div-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:2.2rem;
+      position:relative; overflow:hidden;
+      transition:border-color .3s, transform .3s;
+    }
+    .div-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg, var(--orange), var(--yellow));
+      opacity:0; transition:opacity .3s;
+    }
+    .div-card:hover { border-color:rgba(249,115,22,.4); transform:translateY(-4px); }
+    .div-card:hover::before { opacity:1; }
+    .div-card-glow {
+      position:absolute; width:220px; height:220px;
+      border-radius:50%; filter:blur(65px);
+      top:-60px; right:-60px; pointer-events:none;
+      opacity:0; transition:opacity .4s;
+    }
+    .div-card:hover .div-card-glow { opacity:1; }
+    .glow-o  { background:rgba(249,115,22,.18); }
+    .glow-y  { background:rgba(251,191,36,.14); }
+    .glow-f  { background:rgba(255,77,0,.13); }
+    .div-icon-wrap {
+      width:52px; height:52px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; margin-bottom:1.4rem;
+    }
+    .icon-o { background:rgba(249,115,22,.15); border:1px solid rgba(249,115,22,.3); }
+    .icon-y { background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.25); }
+    .icon-f { background:rgba(255,77,0,.12);   border:1px solid rgba(255,77,0,.25); }
+    /* thunder SVG icon inside divisions */
+    .div-thunder {
+      width:28px; height:28px;
+    }
+    .div-card h3 {
+      font-family:'Syne',sans-serif;
+      font-size:1.1rem; font-weight:800; margin-bottom:.2rem;
+    }
+    .div-role { font-size:.78rem; color:var(--orange); margin-bottom:1rem; letter-spacing:.04em; font-weight:600; }
+    .div-card p { font-size:.9rem; color:var(--fg2); line-height:1.75; margin-bottom:1.5rem; }
+    .tags { display:flex; flex-wrap:wrap; gap:.45rem; }
+    .tag {
+      font-size:.7rem; padding:.25rem .65rem;
+      border:1px solid var(--border2); border-radius:999px;
+      color:var(--fg2);
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem;
+    }
+    .proj-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; overflow:hidden;
+      text-decoration:none; color:var(--fg);
+      display:flex; flex-direction:column;
+      transition:border-color .3s, transform .3s, box-shadow .3s;
+    }
+    .proj-card:hover {
+      border-color:rgba(249,115,22,.45);
+      transform:translateY(-5px);
+      box-shadow:0 20px 60px rgba(249,115,22,.14);
+    }
+    .proj-thumb {
+      height:180px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:3.5rem; position:relative; overflow:hidden;
+    }
+    .proj-thumb-1 { background:linear-gradient(135deg,#150a00,#2a1200); }
+    .proj-thumb-2 { background:linear-gradient(135deg,#0d1200,#1a2200); }
+    .proj-thumb::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to bottom, transparent 40%, var(--card));
+    }
+    .proj-badge {
+      position:absolute; top:1rem; left:1rem;
+      background:rgba(249,115,22,.2); border:1px solid rgba(249,115,22,.45);
+      color:var(--orange); font-size:.68rem; font-weight:700;
+      padding:.2rem .6rem; border-radius:999px; letter-spacing:.06em; z-index:1;
+    }
+    .proj-body { padding:1.6rem; flex:1; display:flex; flex-direction:column; gap:.75rem; }
+    .proj-card h3 { font-family:'Syne',sans-serif; font-size:1rem; font-weight:800; }
+    .proj-tagline { font-size:.8rem; color:var(--yellow); font-weight:600; }
+    .proj-card p { font-size:.87rem; color:var(--fg2); line-height:1.7; flex:1; }
+    .proj-link {
+      display:inline-flex; align-items:center; gap:.4rem;
+      font-size:.82rem; color:var(--orange); font-weight:600;
+      text-decoration:none; margin-top:.25rem; transition:gap .2s;
+    }
+    .proj-link:hover { gap:.7rem; }
+
+    /* ── PROCESS ── */
+    .process-track {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:0; position:relative; margin-top:3rem;
+    }
+    .process-track::before {
+      content:''; position:absolute; top:28px; left:0; right:0; height:1px;
+      background:linear-gradient(90deg, transparent, var(--border2) 10%, var(--border2) 90%, transparent);
+    }
+    .process-step { padding:0 1.5rem 2rem; text-align:center; }
+    .step-num {
+      width:56px; height:56px; border-radius:50%;
+      border:1px solid var(--border2); background:var(--card);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Syne',sans-serif; font-weight:800; font-size:1rem;
+      color:var(--orange); margin:0 auto 1.2rem;
+      position:relative; z-index:1;
+      box-shadow:0 0 0 4px var(--bg), 0 0 14px rgba(249,115,22,.2);
+    }
+    .process-step h4 { font-weight:700; font-size:.95rem; margin-bottom:.4rem; }
+    .process-step p { font-size:.82rem; color:var(--fg2); line-height:1.65; }
+
+    /* ── TEAM ── */
+    .team-bg { background:var(--bg2); }
+    .team-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem;
+    }
+    .team-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:2.2rem; text-align:center;
+      position:relative; overflow:hidden;
+      transition:border-color .3s, transform .3s;
+    }
+    .team-card:hover { border-color:rgba(249,115,22,.35); transform:translateY(-4px); }
+    .team-avatar {
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800;
+      color:#000; margin:0 auto 1.2rem;
+      box-shadow:0 0 22px rgba(249,115,22,.4);
+    }
+    .team-badge {
+      display:inline-block; font-size:.68rem; padding:.22rem .7rem;
+      background:rgba(249,115,22,.12); border:1px solid rgba(249,115,22,.28);
+      color:var(--orange); border-radius:4px; font-weight:700;
+      margin-bottom:1rem; letter-spacing:.05em;
+    }
+    .team-card h3 { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:800; margin-bottom:.2rem; }
+    .team-title { font-size:.78rem; color:var(--yellow); margin-bottom:.8rem; font-weight:600; }
+    .team-card p { font-size:.86rem; color:var(--fg2); line-height:1.65; }
+    .team-card-glow {
+      position:absolute; width:160px; height:160px;
+      border-radius:50%; filter:blur(55px);
+      background:rgba(249,115,22,.1);
+      bottom:-50px; right:-30px; pointer-events:none;
+    }
+
+    /* ── CONTACT ── */
+    .contact-layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+    .contact-info .sub { color:var(--fg2); line-height:1.8; margin-bottom:2rem; }
+    .contact-email-wrap {
+      display:flex; align-items:center; gap:.75rem;
+      background:var(--card); border:1px solid var(--border2);
+      border-radius:10px; padding:1rem 1.4rem; margin-bottom:1.2rem;
+      text-decoration:none; color:var(--fg);
+      transition:border-color .2s, transform .2s;
+    }
+    .contact-email-wrap:hover { border-color:var(--orange); transform:translateX(4px); }
+    .email-icon {
+      width:40px; height:40px; border-radius:8px;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; flex-shrink:0; color:#000;
+    }
+    .email-label { font-size:.72rem; color:var(--fg2); }
+    .email-addr { font-size:.9rem; font-weight:600; }
+    .contact-note { font-size:.78rem; color:var(--fg2); margin-top:.75rem; }
+    .contact-form {
+      background:var(--card); border:1px solid var(--border2);
+      border-radius:16px; padding:2.2rem;
+    }
+    .form-row { margin-bottom:1.2rem; }
+    .form-row label { display:block; font-size:.8rem; color:var(--fg2); margin-bottom:.45rem; font-weight:600; }
+    .form-row input, .form-row textarea, .form-row select {
+      width:100%; background:var(--bg);
+      border:1px solid var(--border2); border-radius:8px;
+      padding:.75rem 1rem; color:var(--fg);
+      font-family:'Space Grotesk',sans-serif; font-size:.9rem;
+      outline:none; transition:border-color .2s;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      border-color:var(--orange);
+    }
+    .form-row textarea { resize:vertical; min-height:110px; }
+    .form-row select option { background:var(--bg); }
+    .form-submit {
+      width:100%;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      color:#000; border:none; border-radius:8px;
+      padding:.9rem; font-family:'Space Grotesk',sans-serif;
+      font-size:.95rem; font-weight:700; cursor:pointer;
+      box-shadow:0 4px 20px rgba(249,115,22,.45);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .form-submit:hover { transform:translateY(-2px); box-shadow:0 6px 30px rgba(249,115,22,.65); }
+    .form-2col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top:1px solid var(--border);
+      padding:3rem 2.5rem 2rem;
+      position:relative; z-index:1;
+    }
+    .footer-inner { max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:2rem; }
+    .footer-top {
+      display:flex; justify-content:space-between; align-items:flex-start;
+      flex-wrap:wrap; gap:2rem;
+    }
+    .footer-brand .logo {
+      font-family:'Syne',sans-serif; font-weight:800; font-size:1.15rem; color:var(--fg);
+      margin-bottom:.5rem; display:flex; align-items:center; gap:.5rem;
+    }
+    .footer-brand p { font-size:.82rem; color:var(--fg2); max-width:260px; line-height:1.7; }
+    .footer-links { display:flex; gap:3rem; flex-wrap:wrap; }
+    .footer-col h5 { font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--fg); margin-bottom:1rem; }
+    .footer-col a { display:block; font-size:.82rem; color:var(--fg2); text-decoration:none; margin-bottom:.6rem; transition:color .2s; }
+    .footer-col a:hover { color:var(--orange); }
+    .footer-bottom {
+      border-top:1px solid var(--border); padding-top:1.5rem;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:1rem; font-size:.78rem; color:var(--fg2);
+    }
+
+    /* ── FADE UP ── */
+    .fade-up { opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity:1; transform:translateY(0); }
+
+    /* ── MOBILE ── */
+    @media(max-width:768px){
+      nav { padding:1rem 1.2rem; }
+      .nav-links { display:none; }
+      .hero { padding:7rem 1.2rem 3rem; }
+      .hero-thunder-bg { display:none; }
+      section { padding:5rem 1.2rem; }
+      .about-layout { grid-template-columns:1fr; }
+      .about-visual { display:none; }
+      .contact-layout { grid-template-columns:1fr; }
+      .process-track::before { display:none; }
+      .form-2col { grid-template-columns:1fr; }
+      .footer-top { flex-direction:column; }
+      .hero-stats { gap:1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- BG LAYERS -->
+<div class="hero-grid"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <!-- Thunder SVG Logo -->
+    <svg class="thunder-logo" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f97316"/>
+          <stop offset="55%" stop-color="#fbbf24"/>
+          <stop offset="100%" stop-color="#fff176"/>
+        </linearGradient>
+        <filter id="tglow">
+          <feGaussianBlur stdDeviation="1.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#tg)" filter="url(#tglow)"/>
+    </svg>
+    ZOFU GROUP
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#divisions">Divisions</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="mailto:contactzofugroups@gmail.com">Get In Touch</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <!-- Massive bg thunder -->
+  <svg class="hero-thunder-bg" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f97316"/>
+        <stop offset="60%" stop-color="#fbbf24"/>
+        <stop offset="100%" stop-color="#fff176"/>
+      </linearGradient>
+    </defs>
+    <polygon points="120,4 40,128 90,128 80,236 160,112 110,112 120,4" fill="url(#hbg)"/>
+  </svg>
+
+  <div class="hero-tag">
+    <span class="blink"></span>
+    Technology &amp; Digital Solutions — Est. 30 Nov 2025
+  </div>
+  <h1>
+    BUILD WHAT<br>
+    <span class="line2">MATTERS</span>
+  </h1>
+  <p class="hero-sub">We turn your ideas into real digital products — from concept to launch. Software, apps, design, and startup support under one roof.</p>
+  <div class="hero-btns">
+    <a href="#divisions" class="btn-primary">Explore Divisions</a>
+    <a href="#contact" class="btn-outline">Start a Project</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="num">2+</div>
+      <div class="label">Products Shipped</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">3</div>
+      <div class="label">Expert Divisions</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">24h</div>
+      <div class="label">Response Time</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">∞</div>
+      <div class="label">Ideas Welcome</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-layout">
+      <div class="about-text fade-up">
+        <p class="section-eyebrow">About Us</p>
+        <h2>We Build Digital Products That Drive Growth</h2>
+        <p>ZOFU GROUP is a technology and digital solutions company focused on helping individuals, startups, and businesses turn their ideas into real products.</p>
+        <p>We provide end-to-end services including software development, web and mobile application development, UI/UX design, product design, and digital system solutions.</p>
+        <p>Our mission is to solve real-world problems through innovative technology and creative design. At ZOFU GROUP, we believe <strong>great ideas deserve the right technology</strong> and support to grow.</p>
+        <div class="about-est">
+          📅 &nbsp;Established: <strong style="color:var(--fg)">30 November 2025</strong>
+        </div>
+      </div>
+      <div class="about-visual fade-up">
+        <div class="about-card-stack">
+          <div class="acard acard1">
+            <div class="acard-glow"></div>
+            <div class="acard-icon">
+              <svg width="32" height="38" viewBox="0 0 40 48" fill="none">
+                <defs><linearGradient id="ag1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><filter id="ag1f"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#ag1)" filter="url(#ag1f)"/>
+              </svg>
+            </div>
+            <div class="acard-title">Engineering</div>
+            <div class="acard-sub">Scalable &amp; modern</div>
+          </div>
+          <div class="acard acard2">
+            <div class="acard-icon">🎨</div>
+            <div class="acard-title">Design</div>
+            <div class="acard-sub">Beautiful interfaces</div>
+          </div>
+          <div class="acard acard3">
+            <div class="acard-icon">🚀</div>
+            <div class="acard-title">Growth</div>
+            <div class="acard-sub">Startup to scale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVISIONS -->
+<section id="divisions" class="divs-bg">
+  <div class="container">
+    <p class="section-eyebrow">Our Divisions</p>
+    <h2>Three Pillars of Innovation</h2>
+    <p class="section-sub">Every division serves a unique need — together, they cover everything your digital journey demands.</p>
+    <div class="divisions-grid">
+      <div class="div-card fade-up">
+        <div class="div-card-glow glow-o"></div>
+        <div class="div-icon-wrap icon-o">
+          <svg class="div-thunder" viewBox="0 0 40 48" fill="none">
+            <defs><linearGradient id="dg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><filter id="df1"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#dg1)" filter="url(#df1)"/>
+          </svg>
+        </div>
+        <h3>ZOFU GROUP TECH</h3>
+        <div class="div-role">Engineering &amp; Development</div>
+        <p>We build powerful, scalable digital products — from mobile apps to web platforms and immersive game experiences. Our engineers craft clean, high-performance code that brings your vision to life.</p>
+        <div class="tags">
+          <span class="tag">App Development</span>
+          <span class="tag">Web Development</span>
+          <span class="tag">Game Development</span>
+          <span class="tag">Software Solutions</span>
+        </div>
+      </div>
+      <div class="div-card fade-up">
+        <div class="div-card-glow glow-y"></div>
+        <div class="div-icon-wrap icon-y">
+          <svg class="div-thunder" viewBox="0 0 40 48" fill="none">
+            <defs><linearGradient id="dg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#fff176"/></linearGradient><filter id="df2"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#dg2)" filter="url(#df2)"/>
+          </svg>
+        </div>
+        <h3>ZOFU GROUP STUDIO</h3>
+        <div class="div-role">Design &amp; Brand Identity</div>
+        <p>We craft beautiful, meaningful digital experiences. From intuitive UI/UX flows to bold brand identities and strategic marketing — we make your product look and feel extraordinary.</p>
+        <div class="tags">
+          <span class="tag">UI/UX Design</span>
+          <span class="tag">Branding</span>
+          <span class="tag">Marketing</span>
+          <span class="tag">Product Design</span>
+        </div>
+      </div>
+      <div class="div-card fade-up">
+        <div class="div-card-glow glow-f"></div>
+        <div class="div-icon-wrap icon-f">
+          <svg class="div-thunder" viewBox="0 0 40 48" fill="none">
+            <defs><linearGradient id="dg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff4d00"/><stop offset="100%" stop-color="#f97316"/></linearGradient><filter id="df3"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#dg3)" filter="url(#df3)"/>
+          </svg>
+        </div>
+        <h3>ZOFU GROUP FOUNDERS</h3>
+        <div class="div-role">Startup &amp; Business Support</div>
+        <p>We partner with founders and businesses to navigate growth. From ideation to execution — business strategy, tech architecture, and go-to-market planning. Build right from day one.</p>
+        <div class="tags">
+          <span class="tag">Startup Support</span>
+          <span class="tag">Business Strategy</span>
+          <span class="tag">Tech Consulting</span>
+          <span class="tag">Growth Marketing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <p class="section-eyebrow">Our Work</p>
+    <h2>Projects We've Built</h2>
+    <p class="section-sub">Real solutions, shipped. From concept to deployment — here's what we've created for the world.</p>
+    <div class="projects-grid">
+      <a class="proj-card fade-up" href="https://hostelmanagement-zinovadevelop.vercel.app" target="_blank" rel="noopener">
+        <div class="proj-thumb proj-thumb-1">
+          🏨
+          <span class="proj-badge">Live</span>
+        </div>
+        <div class="proj-body">
+          <h3>HOSTEL MANAGEMENT</h3>
+          <div class="proj-tagline">Room &amp; Resident Management System</div>
+          <p>A comprehensive digital platform to streamline hostel operations — room allocation, resident tracking, fee management, and admin controls. Designed to eliminate paperwork.</p>
+          <div class="tags">
+            <span class="tag">Web App</span>
+            <span class="tag">Admin Dashboard</span>
+            <span class="tag">Room Booking</span>
+            <span class="tag">Fee Tracking</span>
+          </div>
+          <span class="proj-link">Visit Project →</span>
+        </div>
+      </a>
+      <a class="proj-card fade-up" href="https://businessflowsuite-zinovadevelop.vercel.app" target="_blank" rel="noopener">
+        <div class="proj-thumb proj-thumb-2">
+          🏪
+          <span class="proj-badge">Live</span>
+        </div>
+        <div class="proj-body">
+          <h3>BUSINESS FLOWSUITE</h3>
+          <div class="proj-tagline">Manage invoices, leads, and stock — without the chaos.</div>
+          <p>Automate your business operations — from invoices to inventory — while staying in sync with Tally Solutions. Reduce manual work, avoid errors, and get clear insights.</p>
+          <div class="tags">
+            <span class="tag">Web App</span>
+            <span class="tag">Dashboard</span>
+            <span class="tag">Invoice</span>
+            <span class="tag">CRM</span>
+            <span class="tag">Tally</span>
+          </div>
+          <span class="proj-link">Visit Project →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="divs-bg">
+  <div class="container">
+    <p class="section-eyebrow">How We Work</p>
+    <h2>From Idea to Launch</h2>
+    <p class="section-sub">A clear, proven process so you always know what's happening and what's next.</p>
+    <div class="process-track">
+      <div class="process-step fade-up">
+        <div class="step-num">01</div>
+        <h4>Discovery</h4>
+        <p>We dive into your idea, goals, and constraints — mapping out what needs to be built and why.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num">02</div>
+        <h4>Design</h4>
+        <p>Wireframes, user flows, and visual design — your product takes shape before a line of code is written.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num">03</div>
+        <h4>Build</h4>
+        <p>Clean, scalable engineering. We ship iteratively so you see real progress every week.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num">04</div>
+        <h4>Launch</h4>
+        <p>Tested, deployed, and live. We stay on board to ensure a smooth go-to-market.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" class="team-bg">
+  <div class="container">
+    <p class="section-eyebrow">The People Behind It</p>
+    <h2>Meet Our Founding Team</h2>
+    <p class="section-sub">Three visionaries who came together on 30 November 2025 to build technology that empowers people and organizations.</p>
+    <div class="team-grid">
+      <div class="team-card fade-up">
+        <div class="team-card-glow"></div>
+        <div class="team-avatar">VS</div>
+        <div class="team-badge">CEO</div>
+        <h3>Varun. S</h3>
+        <div class="team-title">Founder &amp; CEO</div>
+        <p>Visionary leader driving ZOFU GROUP's mission — the driving force behind the company's inception and overall strategic direction.</p>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-card-glow"></div>
+        <div class="team-avatar">VA</div>
+        <div class="team-badge">CPO</div>
+        <h3>Vishnu Vardhan. A.S</h3>
+        <div class="team-title">Co-Founder &amp; CPO</div>
+        <p>Product strategist with a sharp eye for user needs and market fit. Champions the product vision across all three ZOFU GROUP divisions.</p>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-card-glow"></div>
+        <div class="team-avatar">AD</div>
+        <div class="team-badge">CTO</div>
+        <h3>Amritanand. D</h3>
+        <div class="team-title">Co-Founder &amp; CTO</div>
+        <p>Tech architect behind ZOFU GROUP's engineering backbone — building scalable systems and leading the technical vision from the ground up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="contact-info fade-up">
+        <p class="section-eyebrow">Get In Touch</p>
+        <h2>Let's Build Something Great Together</h2>
+        <p class="sub">Have an idea? Whether you're a startup with a vision, a business looking to digitize, or an individual with a concept — reach out. We'll help you figure out the next step and build it right.</p>
+        <a class="contact-email-wrap" href="mailto:contactzofugroups@gmail.com">
+          <div class="email-icon">✉</div>
+          <div>
+            <div class="email-label">Email us directly</div>
+            <div class="email-addr">contactzofugroups@gmail.com</div>
+          </div>
+        </a>
+        <p class="contact-note">⏱ We typically respond within 24 hours.</p>
+      </div>
+      <div class="contact-form fade-up">
+        <div class="form-2col">
+          <div class="form-row">
+            <label>Your Name</label>
+            <input type="text" placeholder="John Doe" />
+          </div>
+          <div class="form-row">
+            <label>Email Address</label>
+            <input type="email" placeholder="you@example.com" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>What are you looking for?</label>
+          <select>
+            <option value="">Select a service...</option>
+            <option>App / Web Development</option>
+            <option>UI/UX Design</option>
+            <option>Branding &amp; Marketing</option>
+            <option>Startup Support</option>
+            <option>Business Strategy</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Tell us about your project</label>
+          <textarea placeholder="Share your idea, goals, or questions — we'd love to hear it..."></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit(this)">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">
+          <svg width="22" height="26" viewBox="0 0 40 48" fill="none">
+            <defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><filter id="ff1"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#fg1)" filter="url(#ff1)"/>
+          </svg>
+          ZOFU GROUP
+        </div>
+        <p>Technology &amp; digital solutions — helping ideas become real products since 2025.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#about">About Us</a>
+          <a href="#team">Our Team</a>
+          <a href="#process">How We Work</a>
+        </div>
+        <div class="footer-col">
+          <h5>Divisions</h5>
+          <a href="#divisions">ZOFU Tech</a>
+          <a href="#divisions">ZOFU Studio</a>
+          <a href="#divisions">ZOFU Founders</a>
+        </div>
+        <div class="footer-col">
+          <h5>Work</h5>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Start a Project</a>
+          <a href="mailto:contactzofugroups@gmail.com">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ZOFU GROUP. All rights reserved.</span>
+      <span>Est. 30 November 2025</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+  (function animRing(){
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a,button,.div-card,.proj-card,.team-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cursor.style.width='22px'; cursor.style.height='22px'; ring.style.width='52px'; ring.style.height='52px'; });
+    el.addEventListener('mouseleave',()=>{ cursor.style.width='13px'; cursor.style.height='13px'; ring.style.width='36px'; ring.style.height='36px'; });
+  });
+
+  // Scroll fade-up
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); obs.unobserve(e.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+  // Form submit
+  function handleSubmit(btn){
+    const orig=btn.textContent; btn.textContent='Sending...'; btn.disabled=true;
+    setTimeout(()=>{
+      btn.textContent='✓ Message Sent!';
+      btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
+      setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; btn.style.background=''; },3500);
+    },1200);
+  }
+
+  // Nav active
+  const secs=document.querySelectorAll('section[id]');
+  const navAs=document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    secs.forEach(s=>{ if(window.scrollY>=s.offsetTop-130) cur=s.id; });
+    navAs.forEach(a=>{ a.style.color=a.getAttribute('href')==='#'+cur?'var(--fg)':''; });
+  },{passive:true});
+</script>
+</body>
+</html>
