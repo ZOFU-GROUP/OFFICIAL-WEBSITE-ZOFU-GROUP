@@ -122,8 +122,60 @@
       font-weight:700; font-size:.85rem; text-decoration:none;
       box-shadow:0 0 18px rgba(249,115,22,.4);
       transition:box-shadow .2s, transform .2s;
+      cursor:pointer; border:none; font-family:'Space Grotesk',sans-serif;
     }
     .nav-cta:hover { box-shadow:0 0 30px rgba(249,115,22,.65); transform:translateY(-1px); }
+
+    /* ── TALK MODAL ── */
+    .talk-overlay {
+      position:fixed; inset:0; z-index:1000;
+      background:rgba(5,4,0,.85); backdrop-filter:blur(8px);
+      display:none; align-items:center; justify-content:center;
+      padding:1.5rem; opacity:0; transition:opacity .25s;
+    }
+    .talk-overlay.open { display:flex; opacity:1; }
+    .talk-card {
+      background:var(--card); border:1px solid var(--border2);
+      border-radius:20px; padding:2.8rem; max-width:420px; width:100%;
+      text-align:center; position:relative;
+      transform:scale(.92); transition:transform .25s;
+      box-shadow:0 30px 90px rgba(0,0,0,.6), 0 0 60px rgba(249,115,22,.08);
+    }
+    .talk-overlay.open .talk-card { transform:scale(1); }
+    .talk-close {
+      position:absolute; top:1.1rem; right:1.1rem;
+      width:32px; height:32px; border-radius:50%;
+      border:1px solid var(--border2); background:transparent;
+      color:var(--fg2); font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:border-color .2s, color .2s;
+    }
+    .talk-close:hover { border-color:var(--orange); color:var(--orange); }
+    .talk-icon {
+      width:60px; height:60px; border-radius:16px; margin:0 auto 1.4rem;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.6rem; box-shadow:0 0 30px rgba(249,115,22,.4);
+    }
+    .talk-card h3 { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; margin-bottom:.6rem; }
+    .talk-card .desc { color:var(--fg2); font-size:.9rem; line-height:1.7; margin-bottom:1.8rem; }
+    .talk-option {
+      display:flex; align-items:center; gap:.9rem;
+      background:var(--bg); border:1px solid var(--border2);
+      border-radius:12px; padding:1rem 1.2rem; margin-bottom:.85rem;
+      text-decoration:none; color:var(--fg);
+      transition:border-color .2s, transform .2s, background .2s;
+    }
+    .talk-option:hover { border-color:var(--orange); transform:translateX(3px); background:rgba(249,115,22,.05); }
+    .talk-opt-icon {
+      width:38px; height:38px; border-radius:9px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.05rem;
+      background:rgba(249,115,22,.13); border:1px solid rgba(249,115,22,.25);
+    }
+    .talk-opt-text { text-align:left; flex:1; }
+    .talk-opt-text .t1 { font-weight:700; font-size:.9rem; }
+    .talk-opt-text .t2 { font-size:.76rem; color:var(--fg2); }
+    .talk-opt-arrow { color:var(--orange); font-size:1.1rem; }
 
     /* ── HERO ── */
     .hero {
@@ -428,56 +480,66 @@
     }
 
     /* ── CONTACT ── */
-    .contact-layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
-    .contact-info .sub { color:var(--fg2); line-height:1.8; margin-bottom:2rem; }
-    .contact-email-wrap {
-      display:flex; align-items:center; gap:.75rem;
-      background:var(--card); border:1px solid var(--border2);
-      border-radius:10px; padding:1rem 1.4rem; margin-bottom:1.2rem;
-      text-decoration:none; color:var(--fg);
-      transition:border-color .2s, transform .2s;
-    }
-    .contact-email-wrap:hover { border-color:var(--orange); transform:translateX(4px); }
-    .email-icon {
-      width:40px; height:40px; border-radius:8px;
+    .contact-center { text-align:center; max-width:640px; margin:0 auto; }
+    .contact-talk-btn {
+      display:inline-flex; align-items:center; gap:.7rem;
       background:linear-gradient(135deg, var(--orange), var(--yellow));
-      display:flex; align-items:center; justify-content:center;
-      font-size:1rem; flex-shrink:0; color:#000;
+      color:#000; padding:1.1rem 2.8rem; border-radius:12px;
+      font-weight:800; font-size:1.1rem; border:none; cursor:pointer;
+      font-family:'Space Grotesk',sans-serif; margin-top:.5rem;
+      box-shadow:0 8px 36px rgba(249,115,22,.4);
+      transition:transform .25s, box-shadow .25s;
     }
-    .email-label { font-size:.72rem; color:var(--fg2); }
-    .email-addr { font-size:.9rem; font-weight:600; }
-    .contact-note { font-size:.78rem; color:var(--fg2); margin-top:.75rem; }
-    .contact-form {
-      background:var(--card); border:1px solid var(--border2);
-      border-radius:16px; padding:2.2rem;
-    }
-    .form-row { margin-bottom:1.2rem; }
-    .form-row label { display:block; font-size:.8rem; color:var(--fg2); margin-bottom:.45rem; font-weight:600; }
-    .form-row input, .form-row textarea, .form-row select {
-      width:100%; background:var(--bg);
-      border:1px solid var(--border2); border-radius:8px;
-      padding:.75rem 1rem; color:var(--fg);
-      font-family:'Space Grotesk',sans-serif; font-size:.9rem;
-      outline:none; transition:border-color .2s;
-    }
-    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
-      border-color:var(--orange);
-    }
-    .form-row textarea { resize:vertical; min-height:110px; }
-    .form-row select option { background:var(--bg); }
-    .form-submit {
-      width:100%;
-      background:linear-gradient(135deg, var(--orange), var(--yellow));
-      color:#000; border:none; border-radius:8px;
-      padding:.9rem; font-family:'Space Grotesk',sans-serif;
-      font-size:.95rem; font-weight:700; cursor:pointer;
-      box-shadow:0 4px 20px rgba(249,115,22,.45);
-      transition:transform .2s, box-shadow .2s;
-    }
-    .form-submit:hover { transform:translateY(-2px); box-shadow:0 6px 30px rgba(249,115,22,.65); }
-    .form-2col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .contact-talk-btn:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 50px rgba(249,115,22,.6); }
+    .contact-note { font-size:.82rem; color:var(--fg2); margin-top:1.3rem; }
 
-    /* ── FOOTER ── */
+    /* ── MARQUEE STRIP ── */
+    .marquee-wrap {
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      background:var(--bg2); padding:1.1rem 0; overflow:hidden;
+      position:relative; z-index:1;
+    }
+    .marquee-track {
+      display:flex; gap:3rem; width:max-content;
+      animation:marquee 22s linear infinite;
+    }
+    .marquee-item {
+      display:flex; align-items:center; gap:.7rem;
+      font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem;
+      color:var(--fg2); white-space:nowrap; letter-spacing:.02em;
+    }
+    .marquee-item .bolt { width:16px; height:16px; }
+    .marquee-item.hot {
+      background:linear-gradient(120deg, var(--orange), var(--yellow));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── CTA STRIP (bottom of page) ── */
+    .cta-strip {
+      background:linear-gradient(135deg, #1a0e00, #0d0700 60%);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:6rem 2.5rem; text-align:center; position:relative; overflow:hidden; z-index:1;
+    }
+    .cta-strip-glow {
+      position:absolute; width:600px; height:300px; left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      background:radial-gradient(ellipse, rgba(249,115,22,.18), transparent 70%);
+      pointer-events:none;
+    }
+    .cta-strip h2 { font-size:clamp(2rem,5vw,3.2rem); margin-bottom:1rem; position:relative; }
+    .cta-strip p { color:var(--fg2); max-width:480px; margin:0 auto 2.2rem; position:relative; }
+    .cta-big-btn {
+      display:inline-flex; align-items:center; gap:.6rem;
+      background:linear-gradient(135deg, var(--orange), var(--yellow));
+      color:#000; padding:1.1rem 2.6rem; border-radius:10px;
+      font-weight:800; font-size:1.05rem; border:none; cursor:pointer;
+      font-family:'Space Grotesk',sans-serif;
+      box-shadow:0 8px 40px rgba(249,115,22,.45);
+      transition:transform .25s, box-shadow .25s;
+      position:relative;
+    }
+    .cta-big-btn:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 54px rgba(249,115,22,.65); }
     footer {
       border-top:1px solid var(--border);
       padding:3rem 2.5rem 2rem;
@@ -564,7 +626,7 @@
     <li><a href="#team">Team</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a class="nav-cta" href="mailto:contactzofugroups@gmail.com">Get In Touch</a>
+  <button class="nav-cta" onclick="openTalk()">Get In Touch</button>
 </nav>
 
 <!-- HERO -->
@@ -592,7 +654,7 @@
   <p class="hero-sub">We turn your ideas into real digital products — from concept to launch. Software, apps, design, and startup support under one roof.</p>
   <div class="hero-btns">
     <a href="#divisions" class="btn-primary">Explore Divisions</a>
-    <a href="#contact" class="btn-outline">Start a Project</a>
+    <button class="btn-outline" onclick="openTalk()">Start a Project</button>
   </div>
   <div class="hero-stats">
     <div class="stat-item">
@@ -751,20 +813,21 @@
           <span class="proj-link">Visit Project →</span>
         </div>
       </a>
-      <a class="proj-card fade-up" href="https://flomohealthai-zofugroup.vercel.app/" target="_blank" rel="noopener">
+      <a class="proj-card fade-up" href="https://businessflowsuite-zinovadevelop.vercel.app" target="_blank" rel="noopener">
         <div class="proj-thumb proj-thumb-2">
           🏪
           <span class="proj-badge">Live</span>
         </div>
         <div class="proj-body">
-          <h3>FLOMO Health AI</h3>
-          <div class="proj-tagline">AI-Powered Nutrition for Better Health.</div>
-          <p>Flomo Health AI is an AI-powered personal health companion that creates personalized nutrition plans based on your health profile, chronic conditions, activity, medical reports, and lifestyle. Track your health, receive intelligent meal recommendations, monitor progress, and order recommended groceries—all from one place.</p>
+          <h3>BUSINESS FLOWSUITE</h3>
+          <div class="proj-tagline">Manage invoices, leads, and stock — without the chaos.</div>
+          <p>Automate your business operations — from invoices to inventory — while staying in sync with Tally Solutions. Reduce manual work, avoid errors, and get clear insights.</p>
           <div class="tags">
             <span class="tag">Web App</span>
-            <span class="tag">Nutrition</span>
-            <span class="tag">Companion</span>
-            <span class="tag">Care</span>
+            <span class="tag">Dashboard</span>
+            <span class="tag">Invoice</span>
+            <span class="tag">CRM</span>
+            <span class="tag">Tally</span>
           </div>
           <span class="proj-link">Visit Project →</span>
         </div>
@@ -839,53 +902,19 @@
   </div>
 </section>
 
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
 <!-- CONTACT -->
 <section id="contact">
-  <div class="container">
-    <div class="contact-layout">
-      <div class="contact-info fade-up">
-        <p class="section-eyebrow">Get In Touch</p>
-        <h2>Let's Build Something Great Together</h2>
-        <p class="sub">Have an idea? Whether you're a startup with a vision, a business looking to digitize, or an individual with a concept — reach out. We'll help you figure out the next step and build it right.</p>
-        <a class="contact-email-wrap" href="mailto:contactzofugroups@gmail.com">
-          <div class="email-icon">✉</div>
-          <div>
-            <div class="email-label">Email us directly</div>
-            <div class="email-addr">contactzofugroups@gmail.com</div>
-          </div>
-        </a>
-        <p class="contact-note">⏱ We typically respond within 24 hours.</p>
-      </div>
-      <div class="contact-form fade-up">
-        <div class="form-2col">
-          <div class="form-row">
-            <label>Your Name</label>
-            <input type="text" placeholder="John Doe" />
-          </div>
-          <div class="form-row">
-            <label>Email Address</label>
-            <input type="email" placeholder="you@example.com" />
-          </div>
-        </div>
-        <div class="form-row">
-          <label>What are you looking for?</label>
-          <select>
-            <option value="">Select a service...</option>
-            <option>App / Web Development</option>
-            <option>UI/UX Design</option>
-            <option>Branding &amp; Marketing</option>
-            <option>Startup Support</option>
-            <option>Business Strategy</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Tell us about your project</label>
-          <textarea placeholder="Share your idea, goals, or questions — we'd love to hear it..."></textarea>
-        </div>
-        <button class="form-submit" onclick="handleSubmit(this)">Send Message →</button>
-      </div>
-    </div>
+  <div class="container contact-center">
+    <p class="section-eyebrow" style="justify-content:center">Get In Touch</p>
+    <h2>Let's Build Something Great Together</h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto;text-align:center">Have an idea? Whether you're a startup with a vision, a business looking to digitize, or an individual with a concept — let's talk it through.</p>
+    <button class="contact-talk-btn" onclick="openTalk()">⚡ Talk To Us</button>
+    <p class="contact-note">⏱ We typically respond within 24 hours.</p>
   </div>
 </section>
 
@@ -920,7 +949,7 @@
           <h5>Work</h5>
           <a href="#projects">Projects</a>
           <a href="#contact">Start a Project</a>
-          <a href="mailto:contactzofugroups@gmail.com">Contact</a>
+          <a href="#" onclick="openTalk();return false;">Contact</a>
         </div>
       </div>
     </div>
@@ -930,6 +959,24 @@
     </div>
   </div>
 </footer>
+
+<!-- TALK MODAL -->
+<div class="talk-overlay" id="talkOverlay" onclick="if(event.target===this)closeTalk()">
+  <div class="talk-card">
+    <button class="talk-close" onclick="closeTalk()">✕</button>
+    <div class="talk-icon">⚡</div>
+    <h3>Let's Talk</h3>
+    <p class="desc">Skip the forms. Reach our team directly through whichever way works best for you.</p>
+    <a class="talk-option" href="mailto:contactzofugroups@gmail.com">
+      <div class="talk-opt-icon">✉</div>
+      <div class="talk-opt-text">
+        <div class="t1">Email Us</div>
+        <div class="t2">contactzofugroups@gmail.com</div>
+      </div>
+      <div class="talk-opt-arrow">→</div>
+    </a>
+  </div>
+</div>
 
 <script>
   // Custom cursor
@@ -953,15 +1000,34 @@
   },{threshold:.12});
   document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 
-  // Form submit
-  function handleSubmit(btn){
-    const orig=btn.textContent; btn.textContent='Sending...'; btn.disabled=true;
-    setTimeout(()=>{
-      btn.textContent='✓ Message Sent!';
-      btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
-      setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; btn.style.background=''; },3500);
-    },1200);
-  }
+  // Talk modal
+  function openTalk(){ document.getElementById('talkOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeTalk(){ document.getElementById('talkOverlay').classList.remove('open'); document.body.style.overflow=''; }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTalk(); });
+
+  // Tilt effect on cards
+  document.querySelectorAll('.div-card, .proj-card, .team-card').forEach(card=>{
+    card.style.transformStyle='preserve-3d';
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave',()=>{ card.style.transform=''; });
+  });
+
+  // Build marquee
+  (function(){
+    const bolt = '<svg class="bolt" viewBox="0 0 40 48" fill="none"><defs><linearGradient id="mqg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient></defs><polygon points="24,2 8,26 18,26 16,46 32,22 22,22 24,2" fill="url(#mqg)"/></svg>';
+    const words = ['ENGINEERING','DESIGN','STARTUPS','APPS','WEB','BRANDING','GROWTH','SOFTWARE'];
+    let html = '';
+    for (let r=0; r<2; r++){
+      words.forEach((w,i)=>{
+        html += `<span class="marquee-item${i%2===0?' hot':''}">${bolt} ${w}</span>`;
+      });
+    }
+    document.getElementById('marqueeTrack').innerHTML = html;
+  })();
 
   // Nav active
   const secs=document.querySelectorAll('section[id]');
